@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>領頭羊博士 Dr. Goat - v2.0 未來展望</title>
+    
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Element Plus -->
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css" />
+    <script src="https://unpkg.com/element-plus"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #0f4c3a 0%, #1e7b5e 100%);
+        }
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .pillar-icon {
+            background: rgba(30, 123, 94, 0.1);
+            color: #1e7b5e;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .el-timeline-item__node--large {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="bg-white shadow-sm sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-goat text-green-700 text-2xl mr-2"></i>
+                        <span class="font-bold text-xl text-gray-800">領頭羊博士 Dr. Goat</span>
+                        <el-tag type="success" effect="dark" class="ml-3" round>v2.0 Roadmap</el-tag>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-sm text-gray-500 mr-4">Project Demo for LRI</span>
+                        <el-button type="primary" plain size="small" @click="downloadPDF">匯出簡報</el-button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <div class="hero-gradient text-white py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="lg:flex lg:items-center lg:justify-between">
+                    <div class="lg:w-2/3">
+                        <h1 class="text-4xl font-bold mb-4">從實驗室走向智慧牧場現場</h1>
+                        <p class="text-xl text-green-100 mb-8 max-w-2xl">
+                            v2.0 系統升級藍圖：針對現場網路不穩、大規模權限管理與精準育種需求的全面解決方案。
+                        </p>
+                        <div class="flex gap-4">
+                            <el-button type="warning" size="large" @click="scrollToSection('pillars')">
+                                <i class="fa-solid fa-rocket mr-2"></i> 查看三大升級核心
+                            </el-button>
+                            <el-button color="#ffffff" text class="!text-white border-white hover:bg-white/10" size="large" @click="scrollToSection('timeline')">
+                                <i class="fa-solid fa-code-branch mr-2"></i> 技術重構細節
+                            </el-button>
+                        </div>
+                    </div>
+                    <div class="hidden lg:block lg:w-1/3 text-right opacity-80">
+                        <i class="fa-solid fa-network-wired text-[150px]"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" id="pillars">
+            
+            <!-- Three Pillars Section -->
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900">核心升級承諾</h2>
+                <p class="mt-2 text-gray-600">解決 v1.0 痛點，打造真正落地的農業科技</p>
+            </div>
+
+            <el-row :gutter="24">
+                <!-- Pillar 1: Frontend & UX -->
+                <el-col :xs="24" :md="8" class="mb-6">
+                    <el-card class="feature-card h-full" shadow="hover">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="pillar-icon bg-blue-50 text-blue-600">
+                                <i class="fa-solid fa-mobile-screen-button"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">現場友善體驗</h3>
+                            <p class="text-sm text-gray-500 mb-4">解決訊號不穩與手髒操作難題</p>
+                            
+                            <ul class="text-left w-full space-y-3">
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <span class="font-bold block text-gray-800">PWA 離線同步</span>
+                                        <span class="text-xs text-gray-500">斷網存手機，連線自動上傳 (IndexedDB)</span>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <span class="font-bold block text-gray-800">語音對話輸入</span>
+                                        <span class="text-xs text-gray-500">免打字，Web Speech API 轉文字紀錄</span>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <span class="font-bold block text-gray-800">LINE 智慧整合</span>
+                                        <span class="text-xs text-gray-500">緊急推播與智慧通知路由</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </el-card>
+                </el-col>
+
+                <!-- Pillar 2: Business Logic -->
+                <el-col :xs="24" :md="8" class="mb-6">
+                    <el-card class="feature-card h-full" shadow="hover">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="pillar-icon bg-green-50 text-green-600">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">精準農務決策</h3>
+                            <p class="text-sm text-gray-500 mb-4">從「紀錄工具」進化為「決策大腦」</p>
+                            
+                            <ul class="text-left w-full space-y-3">
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <span class="font-bold block text-gray-800">近親繁殖紅燈警告</span>
+                                        <span class="text-xs text-gray-500">配種前自動比對族譜 (Sire/Dam)</span>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <span class="font-bold block text-gray-800">生長曲線 PR 值</span>
+                                        <span class="text-xs text-gray-500">取代不穩定的 ML 預測，改用統計標準</span>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <span class="font-bold block text-gray-800">FCR 換肉率與 ESG</span>
+                                        <span class="text-xs text-gray-500">整合飼料庫存計算真實飼養效益</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </el-card>
+                </el-col>
+
+                <!-- Pillar 3: Architecture -->
+                <el-col :xs="24" :md="8" class="mb-6">
+                    <el-card class="feature-card h-full" shadow="hover">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="pillar-icon bg-purple-50 text-purple-600">
+                                <i class="fa-solid fa-server"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">企業級架構</h3>
+                            <p class="text-sm text-gray-500 mb-4">支援大型契作與多場域管理</p>
+                            
+                            <ul class="text-left w-full space-y-3">
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <span class="font-bold block text-gray-800">多層級權限 (RBAC)</span>
+                                        <span class="text-xs text-gray-500">場主/員工/獸醫 角色分離與權限微調</span>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <span class="font-bold block text-gray-800">完整場域層級</span>
+                                        <span class="text-xs text-gray-500">農場 → 區 → 舍 → 欄 (Pen) 結構化</span>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <span class="font-bold block text-gray-800">混合雲 RAG 架構</span>
+                                        <span class="text-xs text-gray-500">本地與 Gemini File Search 雙模組切換</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </el-card>
+                </el-col>
+            </el-row>
+
+            <!-- Detailed Roadmap Timeline -->
+            <div class="mt-16 bg-white p-8 rounded-xl shadow-sm border border-gray-100" id="timeline">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800">系統重構與實施時程</h2>
+                    <el-tag type="warning">Planning Phase</el-tag>
+                </div>
+
+                <el-timeline>
+                    <!-- Phase 1 -->
+                    <el-timeline-item timestamp="Phase 1: 基礎設施與環境升級" placement="top" type="primary" size="large" icon="more">
+                        <el-card>
+                            <h4 class="font-bold text-lg mb-2">環境與核心版本更新</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-gray-50 p-3 rounded">
+                                    <span class="font-bold text-gray-700">Python 3.14 + Postgres 18</span>
+                                    <p class="text-xs text-gray-500">確保未來 5 年的技術支援與效能基底。</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded">
+                                    <span class="font-bold text-gray-700">Gemini SDK 升級</span>
+                                    <p class="text-xs text-gray-500">支援 Gemini 3.0 與 Code Execution 功能。</p>
+                                </div>
+                            </div>
+                        </el-card>
+                    </el-timeline-item>
+
+                    <!-- Phase 2 -->
+                    <el-timeline-item timestamp="Phase 2: 資料庫與後端重構" placement="top" type="warning" size="large" icon="setting">
+                        <el-card>
+                            <h4 class="font-bold text-lg mb-2">權限與資料結構重組 (Drop & Recreate)</h4>
+                            <p class="text-sm text-gray-600 mb-3">解決技術債，建立符合現實的資料關聯。</p>
+                            <el-steps :active="1" align-center class="mb-4">
+                                <el-step title="Schema 重建" description="Farm/Shed/Pen 層級化"></el-step>
+                                <el-step title="RBAC 實作" description="Owner/Vet/Worker 角色"></el-step>
+                                <el-step title="模組降維" description="拆分 Prediction/BI 複雜度"></el-step>
+                            </el-steps>
+                        </el-card>
+                    </el-timeline-item>
+
+                    <!-- Phase 3 -->
+                    <el-timeline-item timestamp="Phase 3: 業務邏輯優化" placement="top" type="success" size="large" icon="cpu">
+                        <el-card>
+                            <h4 class="font-bold text-lg mb-2">導入統計模型與 FCR</h4>
+                            <ul class="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                                <li>移除 LightGBM，改用 <strong>統計 PR 值模型</strong> 進行生長監控，提升信賴度。</li>
+                                <li>實作 <strong>FCR (換肉率)</strong> 計算邏輯，連結飼料庫存。</li>
+                                <li>新增 <strong>繁殖管理介面</strong>，加入近親繁殖檢查邏輯。</li>
+                            </ul>
+                        </el-card>
+                    </el-timeline-item>
+
+                    <!-- Phase 4 -->
+                    <el-timeline-item timestamp="Phase 4: 前端體驗與 PWA" placement="top" type="info" size="large" icon="iphone">
+                        <el-card>
+                            <h4 class="font-bold text-lg mb-2">離線能力與多模態輸入</h4>
+                            <div class="flex items-center gap-4">
+                                <el-tag>Vite PWA</el-tag>
+                                <el-tag>Service Worker</el-tag>
+                                <el-tag>Web Speech API</el-tag>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">解決山區網路問題，實現「斷網操作、連網同步」。</p>
+                        </el-card>
+                    </el-timeline-item>
+                </el-timeline>
+            </div>
+
+            <!-- Comparison Table -->
+             <div class="mt-12">
+                <h3 class="text-2xl font-bold mb-6 text-center">為什麼需要 v2.0？</h3>
+                <el-table :data="comparisonData" style="width: 100%" border stripe size="large">
+                    <el-table-column prop="feature" label="功能面向" width="180">
+                        <template #default="scope">
+                            <span class="font-bold">{{ scope.row.feature }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="v1" label="v1.0 現況 (Current)">
+                         <template #default="scope">
+                            <div class="text-gray-500">{{ scope.row.v1 }}</div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="v2" label="v2.0 目標 (Future)">
+                        <template #default="scope">
+                            <div class="text-green-700 font-bold">
+                                <i class="fa-solid fa-arrow-right text-green-500 mr-1"></i>
+                                {{ scope.row.v2 }}
+                            </div>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-8 mt-12">
+            <div class="max-w-7xl mx-auto px-4 text-center">
+                <p class="mb-2">領頭羊博士 Dr. Goat System Upgrade Plan</p>
+                <p class="text-sm text-gray-400">Designed for Livestock Research Institute Demo</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const { createApp, ref } = Vue;
+
+        const app = createApp({
+            setup() {
+                const downloadPDF = () => {
+                    alert('展示模式：此頁面可截圖放入簡報，或直接以瀏覽器展示。');
+                };
+
+                const scrollToSection = (id) => {
+                    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+                };
+
+                const comparisonData = ref([
+                    {
+                        feature: '網路連線 (Connectivity)',
+                        v1: '依賴即時網路，斷網無法存檔',
+                        v2: 'PWA + IndexedDB 離線優先，斷網可用'
+                    },
+                    {
+                        feature: '生長預測 (Prediction)',
+                        v1: 'LightGBM 機器學習 (需大量資料，初期不穩)',
+                        v2: '統計 PR 值 + 標準生長曲線 (少量資料即可用)'
+                    },
+                    {
+                        feature: '角色權限 (Auth)',
+                        v1: '單一使用者模型 (羊隻綁人)',
+                        v2: 'RBAC (場主/獸醫/員工) + 羊隻綁欄位'
+                    },
+                    {
+                        feature: '繁殖管理 (Breeding)',
+                        v1: '僅單純紀錄配種事件',
+                        v2: '主動防呆，自動偵測近親繁殖 (Inbreeding)'
+                    },
+                    {
+                        feature: 'AI 架構 (RAG)',
+                        v1: '本地 FAISS (難以擴充)',
+                        v2: 'Google GenAI 混合雲架構 (高彈性)'
+                    }
+                ]);
+
+                return {
+                    downloadPDF,
+                    scrollToSection,
+                    comparisonData
+                };
+            }
+        });
+
+        app.use(ElementPlus);
+        app.mount('#app');
+    </script>
+</body>
+</html>
