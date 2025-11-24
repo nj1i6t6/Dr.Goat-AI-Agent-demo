@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>領頭羊博士 v2.0 - 完整架構藍圖</title>
+    <title>領頭羊博士 v2.0 - 完整全功能藍圖</title>
     
     <!-- Vue 3 -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -23,14 +23,15 @@
 
     <style>
         :root {
-            --el-color-primary: #059669; 
+            --el-color-primary: #059669;
+            --line-green: #06C755;
         }
         body {
             font-family: 'Noto Sans TC', sans-serif;
             background-color: #f8fafc;
-            color: #0f172a; /* 更深的黑色，對比更高 */
+            color: #0f172a;
             overflow-x: hidden;
-            font-size: 19px; /* 字體加大，投影專用 */
+            font-size: 19px; /* 大字體保留 */
             line-height: 1.6;
         }
         
@@ -57,13 +58,9 @@
             box-shadow: 0 25px 30px -5px rgba(0, 0, 0, 0.2);
         }
 
-        /* Timeline Customization - Bold Lines */
+        /* Timeline Customization */
         .custom-timeline .el-timeline-item__tail {
             border-left: 4px solid #cbd5e1;
-        }
-        .custom-timeline .el-timeline-item__content {
-            color: #334155;
-            font-size: 18px;
         }
         
         /* 呼吸燈動畫 */
@@ -76,13 +73,21 @@
             animation: pulse-ring 2s infinite;
         }
 
+        /* LINE Notification Animation */
+        @keyframes slideInDown {
+            from { transform: translate3d(0, -100%, 0); opacity: 0; }
+            to { transform: translate3d(0, 0, 0); opacity: 1; }
+        }
+        .line-notification {
+            animation: slideInDown 0.5s ease-out;
+        }
+
         /* Chart Container */
         .chart-container {
-            height: 400px; /* 圖表變大 */
+            height: 400px;
             width: 100%;
         }
 
-        /* 標題樣式 */
         .section-title {
             font-size: 3rem;
             font-weight: 900;
@@ -94,16 +99,28 @@
             color: #64748b;
             font-weight: 500;
         }
-
-        /* 表格樣式優化 */
-        th, td {
-            font-size: 1.25rem; /* 表格字體加大 */
-        }
     </style>
 </head>
 <body>
-    <div id="app" class="min-h-screen flex flex-col">
+    <div id="app" class="min-h-screen flex flex-col relative">
         
+        <!-- LINE Notification Simulator (模擬手機頂部通知) -->
+        <div v-if="showLineNotify" class="fixed top-4 left-0 right-0 z-[9999] flex justify-center pointer-events-none line-notification">
+            <div class="bg-white/95 backdrop-blur shadow-2xl rounded-2xl p-4 flex gap-4 w-[90%] max-w-md border border-gray-200 pointer-events-auto ring-4 ring-green-100">
+                <div class="w-12 h-12 bg-[#06C755] rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i class="fa-brands fa-line text-white text-3xl"></i>
+                </div>
+                <div class="flex-1">
+                    <div class="flex justify-between items-start">
+                        <span class="font-bold text-gray-900">LINE Notify • 領頭羊博士</span>
+                        <span class="text-xs text-gray-500">現在</span>
+                    </div>
+                    <p class="text-gray-800 font-bold mt-1">⚠️ [警報] 近親繁殖風險</p>
+                    <p class="text-gray-600 text-sm leading-tight mt-1">公羊 BM-201 與母羊 BM-205 係數過高 (0.25)。</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Navigation -->
         <nav class="glass-nav fixed w-full z-50 transition-all duration-300">
             <div class="max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
@@ -114,14 +131,17 @@
                         </div>
                         <div class="flex flex-col">
                             <span class="font-black text-3xl tracking-tight text-emerald-900 leading-none">領頭羊博士</span>
-                            <span class="text-sm font-bold text-emerald-600 tracking-wider mt-1">SYSTEM v2.0 BLUEPRINT</span>
+                            <span class="text-sm font-bold text-emerald-600 tracking-wider mt-1">SYSTEM v2.0 COMPLETE</span>
                         </div>
                     </div>
-                    <div class="hidden xl:flex items-center space-x-10">
-                        <a href="#features" @click.prevent="scrollTo('features')" class="text-xl text-gray-700 hover:text-emerald-700 font-bold transition">三大核心</a>
-                        <a href="#architecture" @click.prevent="scrollTo('architecture')" class="text-xl text-gray-700 hover:text-emerald-700 font-bold transition">多租戶架構</a>
-                        <a href="#roadmap" @click.prevent="scrollTo('roadmap')" class="text-xl text-gray-700 hover:text-emerald-700 font-bold transition">技術藍圖</a>
-                        <el-button type="primary" size="large" round class="!font-bold !text-lg !px-6" @click="showStatus">
+                    <div class="hidden xl:flex items-center space-x-8">
+                        <a href="#features" @click.prevent="scrollTo('features')" class="text-lg font-bold text-gray-700 hover:text-emerald-700 transition">核心升級</a>
+                        <a href="#line-section" @click.prevent="scrollTo('line-section')" class="text-lg font-bold text-[#06C755] hover:text-green-600 transition flex items-center gap-1">
+                            <i class="fa-brands fa-line text-xl"></i> LINE 生態
+                        </a>
+                        <a href="#architecture" @click.prevent="scrollTo('architecture')" class="text-lg font-bold text-gray-700 hover:text-emerald-700 transition">多租戶架構</a>
+                        <a href="#roadmap" @click.prevent="scrollTo('roadmap')" class="text-lg font-bold text-gray-700 hover:text-emerald-700 transition">藍圖</a>
+                        <el-button type="primary" size="large" round class="!font-bold !px-6" @click="showStatus">
                             系統狀態
                         </el-button>
                     </div>
@@ -140,46 +160,61 @@
                             <span class="w-3 h-3 rounded-full bg-emerald-400 live-indicator"></span>
                             Live System v2.0
                         </div>
-                        <h1 class="text-6xl lg:text-8xl font-black text-white leading-tight mb-8 drop-shadow-lg">
-                            從實驗室 <br/>
-                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-200">走向智慧牧場</span>
+                        <h1 class="text-6xl lg:text-7xl font-black text-white leading-tight mb-8 drop-shadow-lg">
+                            智慧牧場的入口 <br/>
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#06C755] to-emerald-200">就是 LINE</span>
                         </h1>
                         <p class="text-3xl font-medium text-emerald-50 mb-12 leading-relaxed max-w-3xl" style="text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
-                            針對畜試所重視的現場實務，結合 <strong>PWA 離線技術</strong>、<strong>多租戶管理</strong> 與 <strong>統計模型</strong>，打造真正的落地應用。
+                            真正解決農民「不想學新軟體」的痛點。
+                            結合 <strong>LINE Login</strong>、<strong>PWA 離線技術</strong> 與 <strong>多租戶架構</strong>，實現從個人到企業的無縫接軌。
                         </p>
                         
                         <div class="flex flex-wrap gap-6">
-                            <el-button type="success" size="large" class="!px-10 !h-16 !text-2xl !font-bold !rounded-2xl shadow-2xl hover:scale-105 transition-transform border-2 border-emerald-400" @click="scrollTo('features')">
-                                <i class="fa-solid fa-layer-group mr-3"></i> 探索核心功能
+                            <el-button color="#06C755" size="large" class="!px-10 !h-16 !text-2xl !font-bold !rounded-2xl !text-white shadow-2xl hover:scale-105 transition-transform border-2 border-white/20" @click="scrollTo('line-section')">
+                                <i class="fa-brands fa-line mr-3 text-3xl"></i> LINE 整合展示
                             </el-button>
-                            <el-button plain size="large" class="!px-10 !h-16 !text-2xl !font-bold !rounded-2xl !bg-white/10 !text-white !border-white/30 hover:!bg-white/20" @click="scrollTo('demo-chart')">
-                                <i class="fa-solid fa-chart-pie mr-3"></i> 數據模型展示
+                            <el-button plain size="large" class="!px-10 !h-16 !text-2xl !font-bold !rounded-2xl !bg-white/10 !text-white !border-white/30 hover:!bg-white/20" @click="scrollTo('roadmap')">
+                                <i class="fa-solid fa-map mr-3"></i> 查看實施藍圖
                             </el-button>
                         </div>
                     </div>
 
-                    <!-- Right Side: 模擬 Terminal (保持視覺效果) -->
-                    <div class="relative hidden lg:block animate__animated animate__fadeInRight scale-105">
-                        <div class="bg-slate-900/85 backdrop-blur-xl border-2 border-slate-600 p-8 rounded-3xl shadow-2xl transform rotate-2 hover:rotate-0 transition duration-500">
+                    <!-- Right Side: Phone Visualization (保留 v3 的手機樣式) -->
+                    <div class="relative hidden lg:block animate__animated animate__fadeInRight scale-105 origin-center">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-[#06C755] to-emerald-600 rounded-[2.5rem] blur opacity-40"></div>
+                        <div class="bg-slate-900/90 backdrop-blur-xl border-2 border-slate-600 p-8 rounded-[2rem] shadow-2xl relative max-w-md mx-auto">
+                            <!-- Header -->
                             <div class="flex justify-between items-center mb-6 border-b border-slate-600 pb-4">
-                                <div class="text-emerald-400 font-mono text-xl font-bold flex items-center gap-3">
-                                    <i class="fa-solid fa-terminal"></i> SYSTEM_LOG (Live)
+                                <div class="text-[#06C755] font-bold text-xl flex items-center gap-3">
+                                    <i class="fa-brands fa-line text-3xl"></i> LINE Notify
                                 </div>
-                                <div class="flex gap-3">
-                                    <span class="w-4 h-4 rounded-full bg-red-500"></span>
-                                    <span class="w-4 h-4 rounded-full bg-yellow-500"></span>
-                                    <span class="w-4 h-4 rounded-full bg-green-500"></span>
+                                <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">Live</span>
+                            </div>
+                            <!-- Chat Bubble -->
+                            <div class="space-y-4 font-sans text-base">
+                                <div class="flex gap-4">
+                                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center overflow-hidden border-2 border-slate-600 flex-shrink-0">
+                                        <i class="fa-solid fa-robot text-emerald-600"></i>
+                                    </div>
+                                    <div class="bg-white text-slate-900 p-4 rounded-2xl rounded-tl-none shadow-lg">
+                                        <p class="font-bold mb-1 text-[#06C755]">領頭羊博士 Dr. Goat</p>
+                                        <p>場主您好，系統偵測到 <strong>BM-201</strong> 與 <strong>BM-205</strong> 有近親風險 (0.25)。</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center overflow-hidden border-2 border-slate-600 flex-shrink-0">
+                                        <i class="fa-solid fa-robot text-emerald-600"></i>
+                                    </div>
+                                    <div class="bg-white text-slate-900 p-4 rounded-2xl rounded-tl-none shadow-lg">
+                                        <p class="font-bold mb-1 text-[#06C755]">每日報告</p>
+                                        <p>今日離線紀錄已同步完成 (12筆)。<br>點擊下方選單查看 PR 值分析。</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="font-mono text-lg space-y-4 h-[300px] overflow-hidden relative leading-relaxed">
-                                <div class="text-slate-300">[Multi-Tenant] Loading Farm ID: <span class="text-yellow-400">F-8821</span></div>
-                                <div class="text-slate-300">[Structure] Hierarchy Loaded: Area > Shed > Pen</div>
-                                <div class="text-slate-300">[DB] Connected to PostgreSQL 16+</div>
-                                <div class="text-yellow-400 font-bold">[Alert] Inbreeding Detected: Sire(BM-201) x Dam(BM-205)</div>
-                                <div class="text-emerald-400 font-bold">[Stats] Weight PR Value: 85th Percentile (Excellent)</div>
-                                <div class="text-purple-300">[AI] Gemini 3.0: "Suggest increasing protein by 5%."</div>
-                                <div class="text-slate-300">[Sync] PWA: Uploading 12 offline records...</div>
-                                <div class="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-slate-900/95 to-transparent"></div>
+                            <!-- Bottom Menu -->
+                            <div class="absolute bottom-0 left-0 right-0 h-16 bg-[#212529] rounded-b-[2rem] flex items-center justify-around border-t border-slate-700 mt-8">
+                                <div class="text-slate-400 text-xs flex flex-col items-center"><i class="fa-solid fa-keyboard mb-1"></i> 輸入</div>
+                                <div class="text-slate-400 text-xs flex flex-col items-center"><i class="fa-solid fa-bars mb-1"></i> 選單</div>
                             </div>
                         </div>
                     </div>
@@ -193,13 +228,13 @@
             </div>
         </header>
 
-        <!-- RESTORED: The 3 Pillars Section (核心功能) -->
-        <section id="features" class="py-32 bg-slate-50 relative">
+        <!-- The 3 Pillars Section (核心功能 - 恢復原狀) -->
+        <section id="features" class="py-24 bg-slate-50 relative">
             <div class="max-w-[90%] mx-auto px-4">
-                <div class="text-center mb-20">
+                <div class="text-center mb-16">
                     <h2 class="text-emerald-700 font-black tracking-widest uppercase text-xl mb-4">Core Upgrades</h2>
                     <h3 class="section-title">三大核心升級承諾</h3>
-                    <p class="section-subtitle">解決現場痛點，而非製造更多操作門檻。</p>
+                    <p class="section-subtitle">從現場操作到企業管理，全面覆蓋。</p>
                 </div>
 
                 <div class="grid md:grid-cols-3 gap-12">
@@ -211,7 +246,7 @@
                         <h4 class="text-3xl font-black text-slate-900 mb-6">現場友善體驗</h4>
                         <p class="text-slate-600 mb-8 font-medium text-xl">解決山區訊號不穩與手髒操作難題。</p>
                         <ul class="space-y-4 text-slate-700 text-lg">
-                            <li class="flex items-start"><i class="fa-solid fa-circle-check text-emerald-500 mt-1 mr-3 text-xl"></i><span><strong>PWA 離線同步</strong><br>斷網自動存手機 IndexedDB</span></li>
+                            <li class="flex items-start"><i class="fa-solid fa-circle-check text-emerald-500 mt-1 mr-3 text-xl"></i><span><strong>PWA 離線同步</strong><br>斷網自動存手機</span></li>
                             <li class="flex items-start"><i class="fa-solid fa-circle-check text-emerald-500 mt-1 mr-3 text-xl"></i><span><strong>語音輸入</strong><br>免打字 Web Speech API</span></li>
                         </ul>
                     </div>
@@ -229,83 +264,69 @@
                         </ul>
                     </div>
 
-                    <!-- Card 3: 架構與多租戶 (重點補回) -->
+                    <!-- Card 3: 恢復原有的企業級架構 (Enterprise) -->
                     <div class="bg-white rounded-[2rem] p-10 shadow-xl border-2 border-purple-100 hover-lift relative overflow-hidden group">
-                        <div class="absolute top-0 right-0 bg-purple-600 text-white px-4 py-2 font-bold rounded-bl-xl z-20">企業級</div>
                         <div class="w-20 h-20 bg-purple-100 text-purple-700 rounded-2xl flex items-center justify-center text-4xl mb-8">
                             <i class="fa-solid fa-network-wired"></i>
                         </div>
-                        <h4 class="text-3xl font-black text-slate-900 mb-6">多租戶層級架構</h4>
+                        <h4 class="text-3xl font-black text-slate-900 mb-6">企業級架構</h4>
                         <p class="text-slate-600 mb-8 font-medium text-xl">支援農企業規模化管理與跨場域協作。</p>
                         <ul class="space-y-4 text-slate-700 text-lg">
-                            <li class="flex items-start"><i class="fa-solid fa-circle-check text-purple-500 mt-1 mr-3 text-xl"></i><span><strong>真實場域數位孿生</strong><br>Farm → Area → Shed → Pen</span></li>
-                            <li class="flex items-start"><i class="fa-solid fa-circle-check text-purple-500 mt-1 mr-3 text-xl"></i><span><strong>RBAC 角色權限</strong><br>場主 / 獸醫 (跨場) / 員工</span></li>
+                            <li class="flex items-start"><i class="fa-solid fa-circle-check text-purple-500 mt-1 mr-3 text-xl"></i><span><strong>多租戶權限 (RBAC)</strong><br>獸醫/場主/員工 權限分離</span></li>
+                            <li class="flex items-start"><i class="fa-solid fa-circle-check text-purple-500 mt-1 mr-3 text-xl"></i><span><strong>真實場域數位孿生</strong><br>Farm → Pen 層級化管理</span></li>
                         </ul>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- NEW: Architecture Visualization (多租戶視覺化展示) -->
-        <section id="architecture" class="py-24 bg-white border-y border-slate-200">
+        <!-- NEW: LINE Integration Section (新增的 LINE 專區) -->
+        <section id="line-section" class="py-24 bg-white border-y border-slate-200">
             <div class="max-w-[90%] mx-auto px-4">
                 <div class="grid lg:grid-cols-2 gap-16 items-center">
                     <div>
-                        <el-tag type="info" size="large" effect="dark" class="!text-lg !px-4 mb-4">Architecture Upgrade</el-tag>
-                        <h2 class="text-5xl font-black text-slate-900 mb-6">多租戶與實體層級</h2>
+                        <el-tag color="#06C755" effect="dark" class="mb-4 !text-lg !px-4 !border-none">Taiwan Localization</el-tag>
+                        <h2 class="text-5xl font-black text-slate-900 mb-6">LINE 是唯一的「超級入口」</h2>
                         <p class="text-2xl text-slate-600 mb-8 leading-relaxed">
-                            v2.0 徹底重構資料庫設計，不再只有 User 與 Sheep。
-                            我們導入了 農場代碼 (Farm Code) 機制，讓獸醫可以用單一帳號管理多個合作牧場，並支援細緻的欄位 (Pen) 管理。
+                            我們不強迫農民學習新 App。系統整合 <strong>LINE Login</strong> 與 <strong>LIFF</strong> 技術，讓牧場管理就像「傳 LINE」一樣簡單。
                         </p>
                         <div class="space-y-6">
-                            <div class="flex items-center p-4 bg-slate-50 rounded-xl border border-slate-200">
-                                <div class="bg-indigo-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mr-6">1</div>
+                            <div class="flex items-center p-6 bg-slate-50 rounded-2xl border border-slate-200 shadow-sm">
+                                <div class="bg-[#06C755] text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl font-bold mr-6 flex-shrink-0">
+                                    <i class="fa-solid fa-right-to-bracket"></i>
+                                </div>
                                 <div>
-                                    <h4 class="text-xl font-bold text-slate-800">獸醫視角 (Vet View)</h4>
-                                    <p class="text-lg text-slate-500">單一帳號切換不同 Farm Code，資料完全隔離。</p>
+                                    <h4 class="text-xl font-bold text-slate-800">一鍵綁定登入</h4>
+                                    <p class="text-lg text-slate-500">免記憶帳號密碼，綁定 LINE ID 即刻啟用。</p>
                                 </div>
                             </div>
-                            <div class="flex items-center p-4 bg-slate-50 rounded-xl border border-slate-200">
-                                <div class="bg-indigo-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mr-6">2</div>
+                            <div class="flex items-center p-6 bg-slate-50 rounded-2xl border border-slate-200 shadow-sm">
+                                <div class="bg-[#06C755] text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl font-bold mr-6 flex-shrink-0">
+                                    <i class="fa-solid fa-bell"></i>
+                                </div>
                                 <div>
-                                    <h4 class="text-xl font-bold text-slate-800">批次管理 (Batch Ops)</h4>
-                                    <p class="text-lg text-slate-500">支援以「欄 (Pen)」為單位的疫苗施打與移動。</p>
+                                    <h4 class="text-xl font-bold text-slate-800">Notify 主動推播</h4>
+                                    <p class="text-lg text-slate-500">風險警示、每日報表，主動推送到手機。</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- 視覺化層級圖 -->
-                    <div class="bg-slate-900 p-8 rounded-3xl shadow-2xl relative overflow-hidden">
-                        <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl"></div>
-                        <div class="space-y-4 relative z-10">
-                            <!-- Level 1 -->
-                            <div class="bg-indigo-600/20 border border-indigo-500/50 p-4 rounded-xl text-indigo-100 flex items-center justify-between">
-                                <span class="font-bold text-xl"><i class="fa-solid fa-user-doctor mr-3"></i>User: Vet (Dr. Lin)</span>
-                                <span class="text-sm bg-indigo-600 px-2 py-1 rounded">Global Scope</span>
-                            </div>
-                            <!-- Connector -->
-                            <div class="flex justify-center"><div class="h-6 w-1 bg-slate-600"></div></div>
-                            <!-- Level 2 -->
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-emerald-900/40 border border-emerald-500/50 p-4 rounded-xl text-emerald-100 text-center hover:bg-emerald-900/60 transition cursor-pointer">
-                                    <div class="font-bold text-lg"><i class="fa-solid fa-tractor mr-2"></i>Farm A</div>
-                                    <div class="text-sm text-emerald-400">Code: 8821</div>
+                    <!-- LINE 生態視覺圖 -->
+                    <div class="relative">
+                        <div class="bg-[#06C755]/10 rounded-[3rem] p-10 border-2 border-[#06C755]/30 text-center">
+                            <i class="fa-brands fa-line text-9xl text-[#06C755] mb-8 block"></i>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="bg-white p-4 rounded-xl shadow-md">
+                                    <div class="font-bold text-slate-800 mb-2">身份驗證</div>
+                                    <div class="text-xs text-slate-500">LINE Login</div>
                                 </div>
-                                <div class="bg-slate-700/40 border border-slate-600 p-4 rounded-xl text-slate-400 text-center opacity-60">
-                                    <div class="font-bold text-lg"><i class="fa-solid fa-tractor mr-2"></i>Farm B</div>
-                                    <div class="text-sm">Access Restricted</div>
+                                <div class="bg-white p-4 rounded-xl shadow-md">
+                                    <div class="font-bold text-slate-800 mb-2">操作介面</div>
+                                    <div class="text-xs text-slate-500">LIFF Webview</div>
                                 </div>
-                            </div>
-                             <!-- Connector -->
-                             <div class="flex justify-center relative">
-                                <div class="h-6 w-1 bg-slate-600 absolute left-1/4"></div>
-                            </div>
-                            <!-- Level 3 -->
-                            <div class="ml-4 bg-slate-800 border border-slate-600 p-4 rounded-xl text-white mt-6">
-                                <div class="font-mono text-sm text-slate-400 mb-2">Structure: Farm A > Area 1 > Shed 2</div>
-                                <div class="flex gap-3">
-                                    <div class="bg-emerald-600 px-4 py-2 rounded-lg font-bold">Pen 01 (15隻)</div>
-                                    <div class="bg-slate-700 px-4 py-2 rounded-lg font-bold text-slate-400">Pen 02 (Empty)</div>
+                                <div class="bg-white p-4 rounded-xl shadow-md">
+                                    <div class="font-bold text-slate-800 mb-2">訊息通知</div>
+                                    <div class="text-xs text-slate-500">Messaging API</div>
                                 </div>
                             </div>
                         </div>
@@ -314,38 +335,14 @@
             </div>
         </section>
 
-        <!-- Chart Section (ECharts) -->
-        <section id="demo-chart" class="py-24 bg-slate-50">
-             <div class="max-w-[90%] mx-auto px-4">
-                <div class="grid lg:grid-cols-2 gap-16 items-center">
-                    <div class="order-2 lg:order-1">
-                        <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 relative">
-                            <h4 class="absolute top-6 left-8 text-lg font-bold text-slate-400 uppercase tracking-widest">Live Data: Weight Distribution</h4>
-                            <div id="growthChart" class="chart-container"></div>
-                            <div class="text-center mt-4 text-slate-500 font-bold">
-                                圖表：群體常態分佈 vs 個體落點
-                            </div>
-                        </div>
-                    </div>
-                    <div class="order-1 lg:order-2">
-                        <h2 class="text-4xl font-black text-slate-900 mb-6">統計模型取代黑箱 AI</h2>
-                        <p class="text-2xl text-slate-600 mb-8 leading-relaxed">
-                            我們回歸畜產專業，使用 <strong>常態分佈 (Normal Distribution)</strong> 與 <strong>百分等級 (PR 值)</strong> 來評估生長狀況。這比不透明的 ML 模型更具解釋力。
-                        </p>
-                        <div class="p-6 bg-emerald-100/50 rounded-xl border border-emerald-200">
-                            <h4 class="font-bold text-emerald-800 text-xl mb-2">Gemini 3.0 輔助分析</h4>
-                            <p class="text-emerald-700 text-lg">"該羊隻位於 PR 85，生長速度優於 85% 同齡個體，建議維持目前飼料配方，並關注 FCR 效益。"</p>
-                        </div>
-                    </div>
-                </div>
-             </div>
-        </section>
-
-        <!-- Interactive Simulation -->
+        <!-- Interactive Simulation (結合 LINE 通知) -->
         <section id="demo-interactive" class="py-24 bg-slate-900 text-white">
              <div class="max-w-[85%] mx-auto px-4 text-center">
-                <el-tag type="danger" effect="dark" class="mb-6 !text-lg !px-6">Risk Management</el-tag>
-                <h2 class="text-5xl font-black mb-12">近親繁殖預警模擬</h2>
+                <el-tag type="danger" effect="dark" class="mb-6 !text-lg !px-6">Risk Simulation</el-tag>
+                <h2 class="text-5xl font-black mb-6">即時風險管控模擬</h2>
+                <p class="text-2xl text-slate-400 mb-12 max-w-3xl mx-auto">
+                    點擊按鈕，體驗系統如何在網頁攔截風險，並<span class="text-[#06C755] font-bold">同步發送 LINE 通知</span>到手機。
+                </p>
                 
                 <div class="max-w-5xl mx-auto bg-slate-800 rounded-3xl p-10 border border-slate-700 shadow-2xl">
                     <div class="grid md:grid-cols-3 gap-10 items-center mb-12">
@@ -358,69 +355,147 @@
                         </div>
                         <div class="text-center text-4xl text-slate-500"><i class="fa-solid fa-xmark"></i></div>
                         <!-- Dam -->
-                        <div class="text-center p-8 border-4 border-emerald-500 rounded-3xl bg-emerald-900/20 relative">
-                            <div class="absolute -top-4 -right-4 bg-emerald-600 text-white text-sm px-4 py-2 rounded-full font-bold shadow-lg">Current Selection</div>
-                            <div class="text-5xl text-emerald-500 mb-4"><i class="fa-solid fa-venus"></i></div>
-                            <h4 class="text-2xl font-bold text-emerald-400">母羊 (Dam)</h4>
+                        <div class="text-center p-8 border-4 border-[#06C755] rounded-3xl bg-[#06C755]/10 relative">
+                            <div class="absolute -top-4 -right-4 bg-[#06C755] text-white text-sm px-4 py-2 rounded-full font-bold shadow-lg">Selected</div>
+                            <div class="text-5xl text-[#06C755] mb-4"><i class="fa-solid fa-venus"></i></div>
+                            <h4 class="text-2xl font-bold text-[#06C755]">母羊 (Dam)</h4>
                             <div class="text-3xl font-black text-white my-3">BM-205</div>
-                            <div class="text-lg text-emerald-300 font-bold">父: KF-01 (注意!)</div>
+                            <div class="text-lg text-[#06C755] font-bold">父: KF-01 (注意!)</div>
                         </div>
                     </div>
-                    <el-button type="danger" size="large" class="!px-16 !h-20 !text-2xl !rounded-full shadow-lg shadow-red-900/50 hover:scale-105 transition-transform" @click="simulateRisk" :loading="checking">
-                        <i class="fa-solid fa-shield-virus mr-3"></i> 執行配種檢測
+                    <el-button color="#06C755" size="large" class="!px-16 !h-20 !text-2xl !rounded-full !text-white shadow-lg shadow-green-900/50 hover:scale-105 transition-transform" @click="simulateRisk" :loading="checking">
+                        <i class="fa-solid fa-bell mr-3"></i> 執行檢測 (含 LINE 推播)
                     </el-button>
                 </div>
              </div>
         </section>
 
-        <!-- Detailed Roadmap (文字內容補回) -->
-        <section id="roadmap" class="bg-white py-32">
+        <!-- Architecture & Multi-tenant (恢復原有企業層級視覺) -->
+        <section id="architecture" class="py-24 bg-white border-b border-slate-200">
+            <div class="max-w-[90%] mx-auto px-4">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <h2 class="text-5xl font-black text-slate-900 mb-6">多租戶與實體層級</h2>
+                        <p class="text-2xl text-slate-600 mb-8 leading-relaxed">
+                            v2.0 資料庫導入 **農場代碼 (Farm Code)**。獸醫可以用單一帳號管理多個合作牧場，且每個牧場的資料完全隔離。
+                        </p>
+                        <div class="space-y-6">
+                            <div class="flex items-center p-6 bg-slate-50 rounded-2xl border border-slate-200 shadow-sm">
+                                <div class="bg-indigo-600 text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl font-bold mr-6 flex-shrink-0">
+                                    <i class="fa-solid fa-user-doctor"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-slate-800">獸醫跨場域管理</h4>
+                                    <p class="text-lg text-slate-500">Dr. Lin 可以同時檢視 Farm A 與 Farm B 的數據。</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center p-6 bg-slate-50 rounded-2xl border border-slate-200 shadow-sm">
+                                <div class="bg-indigo-600 text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl font-bold mr-6 flex-shrink-0">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-slate-800">Pen (欄位) 級精細度</h4>
+                                    <p class="text-lg text-slate-500">不再只是「全場」，而是精準到「第 3 舍 第 5 欄」。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 視覺化層級圖 (恢復深色企業風格) -->
+                    <div class="bg-slate-900 p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl"></div>
+                        <div class="space-y-4 relative z-10">
+                            <!-- Level 1 -->
+                            <div class="bg-indigo-600 border border-indigo-400 p-4 rounded-xl text-white flex items-center justify-between shadow-lg">
+                                <span class="font-bold text-xl"><i class="fa-solid fa-user-doctor mr-3"></i>User: Dr. Lin (Vet)</span>
+                                <span class="text-sm bg-white/20 px-2 py-1 rounded">Global Scope</span>
+                            </div>
+                            <!-- Connector -->
+                            <div class="flex justify-center"><div class="h-6 w-1 bg-slate-600"></div></div>
+                            <!-- Level 2 -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-emerald-900/40 border-2 border-emerald-500 p-4 rounded-xl text-emerald-100 text-center hover:bg-emerald-900/60 transition cursor-pointer">
+                                    <div class="font-bold text-lg"><i class="fa-solid fa-tractor mr-2"></i>Farm A</div>
+                                    <div class="text-sm text-emerald-400">Code: 8821</div>
+                                </div>
+                                <div class="bg-slate-700/40 border border-slate-600 p-4 rounded-xl text-slate-400 text-center opacity-60">
+                                    <div class="font-bold text-lg"><i class="fa-solid fa-tractor mr-2"></i>Farm B</div>
+                                    <div class="text-sm">Restricted</div>
+                                </div>
+                            </div>
+                             <!-- Connector -->
+                             <div class="flex justify-center relative">
+                                <div class="h-6 w-1 bg-slate-600 absolute left-1/4"></div>
+                            </div>
+                            <!-- Level 3 -->
+                            <div class="ml-4 bg-slate-800 border border-slate-600 p-4 rounded-xl text-white mt-6">
+                                <div class="font-mono text-sm text-slate-400 mb-2">Structure: Farm A > Shed 2</div>
+                                <div class="flex gap-3">
+                                    <div class="bg-indigo-600 px-4 py-2 rounded-lg font-bold">Pen 01 (15隻)</div>
+                                    <div class="bg-slate-700 px-4 py-2 rounded-lg font-bold text-slate-400">Pen 02 (Empty)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chart Section (ECharts) -->
+        <section class="py-24 bg-slate-50">
+             <div class="max-w-[90%] mx-auto px-4">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <div class="order-2 lg:order-1">
+                        <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 relative">
+                            <h4 class="absolute top-6 left-8 text-lg font-bold text-slate-400 uppercase tracking-widest">Live Data: Weight Distribution</h4>
+                            <div id="growthChart" class="chart-container"></div>
+                        </div>
+                    </div>
+                    <div class="order-1 lg:order-2">
+                        <h2 class="text-4xl font-black text-slate-900 mb-6">統計模型取代黑箱 AI</h2>
+                        <p class="text-2xl text-slate-600 mb-8 leading-relaxed">
+                            我們回歸畜產專業，使用 <strong>常態分佈 (Normal Distribution)</strong> 與 <strong>百分等級 (PR 值)</strong> 來評估生長狀況。
+                        </p>
+                        <div class="p-6 bg-emerald-100/50 rounded-xl border border-emerald-200">
+                            <h4 class="font-bold text-emerald-800 text-xl mb-2">Gemini 3.0 輔助分析</h4>
+                            <p class="text-emerald-700 text-lg">"該羊隻位於 PR 85，生長速度優於 85% 同齡個體。相關數據已同步至 LINE 報表。"</p>
+                        </div>
+                    </div>
+                </div>
+             </div>
+        </section>
+
+        <!-- Roadmap (恢復顯示) -->
+        <section id="roadmap" class="bg-white py-32 border-t border-slate-200">
             <div class="max-w-6xl mx-auto px-4">
                 <div class="text-center mb-20">
                     <h2 class="section-title">實施藍圖 Roadmap</h2>
-                    <p class="section-subtitle">從基礎建設到商業落地的階段性規劃</p>
+                    <p class="section-subtitle">階段性落地規劃</p>
                 </div>
 
                 <el-timeline class="custom-timeline pl-8">
-                    <el-timeline-item placement="top" size="large" type="primary" color="#059669" timestamp="Phase 1: Infrastructure (基礎設施)">
+                    <el-timeline-item placement="top" size="large" type="primary" color="#059669" timestamp="Phase 1: Infrastructure">
                         <div class="bg-slate-50 p-8 rounded-3xl border border-slate-200 ml-8 mb-12 shadow-sm">
                             <h4 class="text-2xl font-black text-slate-800 mb-4">系統底層現代化</h4>
-                            <p class="text-slate-600 text-xl mb-6">建立穩固的地基，確保系統能承受未來 5 年的技術迭代。</p>
-                            <div class="grid md:grid-cols-2 gap-4">
-                                <div class="bg-white p-4 rounded-xl border font-bold text-lg"><i class="fa-brands fa-python mr-2 text-blue-600"></i>Python 3.14 Upgrade</div>
-                                <div class="bg-white p-4 rounded-xl border font-bold text-lg"><i class="fa-solid fa-database mr-2 text-blue-600"></i>PostgreSQL 18</div>
-                                <div class="bg-white p-4 rounded-xl border font-bold text-lg"><i class="fa-solid fa-cloud mr-2 text-blue-600"></i>Google File Search (RAG)</div>
-                            </div>
+                            <p class="text-slate-600 text-xl mb-6">Python 3.11+ / PostgreSQL 16+ / Gemini 3.0</p>
                         </div>
                     </el-timeline-item>
-
-                    <el-timeline-item placement="top" size="large" type="warning" color="#d97706" timestamp="Phase 2: Refactoring (架構重構)">
+                    <el-timeline-item placement="top" size="large" type="warning" color="#d97706" timestamp="Phase 2: Refactoring">
                         <div class="bg-slate-50 p-8 rounded-3xl border border-slate-200 ml-8 mb-12 shadow-sm">
-                            <h4 class="text-2xl font-black text-slate-800 mb-4">多租戶與實體層級導入</h4>
-                            <p class="text-slate-600 text-xl mb-6">修正早期開發的限制，導入符合農場現況的資料結構。</p>
-                            <ul class="text-lg text-slate-700 space-y-3 list-disc list-inside">
-                                <li><strong>資料層重建 (Drop & Recreate)</strong>：Farm → Area → Shed → Pen 層級化。</li>
-                                <li><strong>角色權限 (RBAC)</strong>：Owner / Manager / Worker / Vet 四級權限。</li>
-                                <li><strong>模組降維</strong>：拆分高複雜度模組，提升維護性。</li>
-                            </ul>
+                            <h4 class="text-2xl font-black text-slate-800 mb-4">多租戶與 LINE 整合</h4>
+                            <p class="text-slate-600 text-xl mb-6">LINE Login 接入、Farm/Pen 層級重建、RBAC 權限。</p>
                         </div>
                     </el-timeline-item>
-
-                    <el-timeline-item placement="top" size="large" type="success" color="#059669" timestamp="Phase 3: Business Logic (業務邏輯)">
+                    <el-timeline-item placement="top" size="large" type="success" color="#059669" timestamp="Phase 3: Business Logic">
                         <div class="bg-slate-50 p-8 rounded-3xl border border-slate-200 ml-8 mb-12 shadow-sm">
                             <h4 class="text-2xl font-black text-slate-800 mb-4">科學化決策支援</h4>
-                            <div class="flex flex-wrap gap-4 mt-4">
-                                <el-tag effect="dark" type="success" class="!text-lg !py-6 !px-6">近親繁殖比對</el-tag>
-                                <el-tag effect="dark" type="success" class="!text-lg !py-6 !px-6">FCR 換肉率計算</el-tag>
-                                <el-tag effect="dark" type="success" class="!text-lg !py-6 !px-6">PR 值統計模型</el-tag>
-                            </div>
+                            <p class="text-slate-600 text-xl mb-6">PR 值統計模型、FCR 計算、近親繁殖預警上線。</p>
                         </div>
                     </el-timeline-item>
                 </el-timeline>
             </div>
         </section>
 
-        <!-- Detailed Comparison Table (內容補回) -->
+        <!-- Comparison Table (含 LINE) -->
         <section class="py-32 bg-slate-50 border-t border-slate-200">
             <div class="max-w-[90%] mx-auto px-4">
                 <div class="text-center mb-16">
@@ -433,36 +508,29 @@
                             <tr class="bg-slate-100 border-b-2 border-slate-200 text-2xl font-black text-slate-600">
                                 <th class="p-8 w-1/4">功能面向</th>
                                 <th class="p-8 w-1/3">v1.0 現況</th>
-                                <th class="p-8 w-1/3 bg-emerald-50 text-emerald-800 border-l-2 border-emerald-100">v2.0 目標</th>
+                                <th class="p-8 w-1/3 bg-[#06C755]/10 text-[#06C755] border-l-2 border-[#06C755]/20">v2.0 目標</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y-2 divide-slate-100 text-xl">
                             <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="p-8 font-black text-slate-800">連線能力</td>
-                                <td class="p-8 text-slate-500">依賴即時網路，斷網失效</td>
-                                <td class="p-8 bg-emerald-50/30 text-emerald-900 font-bold border-l-2 border-emerald-100">
-                                    <i class="fa-solid fa-arrow-right text-emerald-600 mr-2"></i> PWA + IndexedDB 離線優先
+                                <td class="p-8 font-black text-slate-800">入口與通知</td>
+                                <td class="p-8 text-slate-500">網頁帳密登入，無主動通知</td>
+                                <td class="p-8 bg-[#06C755]/5 text-slate-800 font-bold border-l-2 border-[#06C755]/20">
+                                    <i class="fa-brands fa-line text-[#06C755] mr-2 text-2xl align-middle"></i> LINE 免密碼 + 即時 Notify
                                 </td>
                             </tr>
                             <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="p-8 font-black text-slate-800">生長預測</td>
-                                <td class="p-8 text-slate-500">LightGBM (初期資料少不準)</td>
-                                <td class="p-8 bg-emerald-50/30 text-emerald-900 font-bold border-l-2 border-emerald-100">
-                                    <i class="fa-solid fa-arrow-right text-emerald-600 mr-2"></i> 統計 PR 值 + 標準曲線
+                                <td class="p-8 font-black text-slate-800">連線能力</td>
+                                <td class="p-8 text-slate-500">斷網失效</td>
+                                <td class="p-8 bg-[#06C755]/5 text-slate-800 font-bold border-l-2 border-[#06C755]/20">
+                                    <i class="fa-solid fa-mobile-screen text-[#06C755] mr-2"></i> PWA + IndexedDB 離線優先
                                 </td>
                             </tr>
                             <tr class="hover:bg-slate-50 transition-colors">
                                 <td class="p-8 font-black text-slate-800">組織架構</td>
-                                <td class="p-8 text-slate-500">單一層級 (User = Farm)</td>
-                                <td class="p-8 bg-emerald-50/30 text-emerald-900 font-bold border-l-2 border-emerald-100">
-                                    <i class="fa-solid fa-arrow-right text-emerald-600 mr-2"></i> 多租戶 (Vet跨場) + 欄位層級
-                                </td>
-                            </tr>
-                             <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="p-8 font-black text-slate-800">繁殖管理</td>
-                                <td class="p-8 text-slate-500">單純事件紀錄</td>
-                                <td class="p-8 bg-emerald-50/30 text-emerald-900 font-bold border-l-2 border-emerald-100">
-                                    <i class="fa-solid fa-arrow-right text-emerald-600 mr-2"></i> 血統追蹤 + 近親預警
+                                <td class="p-8 text-slate-500">單一層級</td>
+                                <td class="p-8 bg-[#06C755]/5 text-slate-800 font-bold border-l-2 border-[#06C755]/20">
+                                    <i class="fa-solid fa-sitemap text-[#06C755] mr-2"></i> 多租戶 + 欄位層級
                                 </td>
                             </tr>
                         </tbody>
@@ -500,6 +568,7 @@
         const app = createApp({
             setup() {
                 const checking = ref(false);
+                const showLineNotify = ref(false);
 
                 const scrollTo = (id) => {
                     const el = document.getElementById(id);
@@ -511,10 +580,9 @@
                         title: 'System Status Check',
                         message: `
                             <div class="font-mono text-sm">
-                                <p><strong>DB Schema:</strong> <span class="text-green-600">v2.0 (Multi-Tenant)</span></p>
-                                <p><strong>PostgreSQL:</strong> <span class="text-green-600">Connected</span></p>
+                                <p><strong>LINE API:</strong> <span class="text-green-600">Connected</span></p>
+                                <p><strong>DB Schema:</strong> <span class="text-green-600">Multi-Tenant v2.0</span></p>
                                 <p><strong>AI Model:</strong> <span class="text-green-600">Gemini 3.0 Pro</span></p>
-                                <p><strong>Offline Mode:</strong> <span class="text-green-600">Ready (PWA)</span></p>
                             </div>
                         `,
                         type: 'success',
@@ -528,11 +596,13 @@
                     checking.value = true;
                     setTimeout(() => {
                         checking.value = false;
+                        
+                        // 1. Show SweetAlert (網頁彈窗)
                         ElementPlus.ElMessageBox.confirm(
                             '<div class="text-left"><p class="mb-2 text-lg">系統偵測到 <b>BM-201</b> 與 <b>BM-205</b> 具有共同父系祖先 (KF-01)。</p><p class="text-red-600 font-bold text-2xl mt-4">近親係數 (CoI): 0.25 (高風險)</p></div>',
                             '⚠️ 嚴重警告：近親繁殖風險',
                             {
-                                confirmButtonText: '強制繼續 (需獸醫授權)',
+                                confirmButtonText: '強制繼續 (需授權)',
                                 cancelButtonText: '取消配種',
                                 type: 'error',
                                 dangerouslyUseHTMLString: true,
@@ -540,14 +610,12 @@
                                 roundButton: true,
                                 customClass: 'text-lg'
                             }
-                        ).catch(() => {
-                            ElementPlus.ElMessage.info({
-                                message: '已取消本次高風險操作',
-                                type: 'info',
-                                showClose: true,
-                                duration: 2000
-                            });
-                        });
+                        );
+
+                        // 2. Simulate LINE Notification (Top of screen)
+                        showLineNotify.value = true;
+                        setTimeout(() => { showLineNotify.value = false; }, 5000);
+
                     }, 800);
                 };
 
@@ -618,7 +686,8 @@
                     scrollTo,
                     showStatus,
                     simulateRisk,
-                    checking
+                    checking,
+                    showLineNotify
                 };
             }
         });
